@@ -54,9 +54,9 @@ international funds).
 
 ## Workflow — Execute in Strict Order
 
-### Step 0 — Fetch Live Rubric Files from GitHub (MANDATORY, before any scoring)
+### Step 0 — Fetch Live Files from GitHub (MANDATORY, before any scoring)
 
-Before scoring anything, fetch the two authoritative files from GitHub. These are the
+Before scoring anything, fetch the three authoritative files from GitHub. These are the
 single source of truth — always pull fresh, never rely on a cached or local copy.
 
 ```
@@ -67,10 +67,16 @@ SIGNAL_FRAMEWORK.md (scoring rubric):
 DAILY_CHECKLIST.md (60-second run guide):
   URL: https://raw.githubusercontent.com/mryash01/mf-analytics/refs/heads/master/DAILY_CHECKLIST.md
   Use: web_fetch on this URL, use it as the step-by-step execution guide.
+
+funds.json (fund list and benchmark routing):
+  URL: https://raw.githubusercontent.com/mryash01/mf-analytics/refs/heads/master/funds.json
+  Use: web_fetch on this URL, parse the funds array, use it as the authoritative list
+       of funds and their benchmark mappings for Step 4 (Per-Fund Verdict).
+       Do NOT use any hardcoded fund list from SKILL.md — the live funds.json overrides it.
 ```
 
-If either fetch fails (network error, 404), halt and tell the user:
-> "Could not fetch the live rubric from GitHub. Scoring on stale data is not permitted.
+If any fetch fails (network error, 404), halt and tell the user:
+> "Could not fetch live files from GitHub. Scoring on stale data is not permitted.
 > Check https://github.com/mryash01/mf-analytics and retry."
 
 Do NOT fall back to any locally cached version of these files.
@@ -185,6 +191,7 @@ Tactical deploys are only on top of base SIP, from a pre-committed cash reserve.
 
 - `SKILL.md` (this file) — protocol
 - `SIGNAL_FRAMEWORK.md` — exact scoring rubric (v3) — **always fetched live from GitHub**
+- `funds.json` — fund list and benchmark routing — **always fetched live from GitHub**
 - `DAILY_CHECKLIST.md` — fast 60-second daily run — **always fetched live from GitHub**
 - `BACKTEST_2024_2026.md` — original 2-year backtest
 - `BACKTEST_2022_2026.md` — 4-year backtest revealing v1 failures
@@ -196,9 +203,10 @@ Tactical deploys are only on top of base SIP, from a pre-committed cash reserve.
 - `SETUP_TELEGRAM.md` — step-by-step setup guide for daily alerts
 - `.github/workflows/daily.yml` — GitHub Actions cron (optional deployment path)
 
-**GitHub raw URLs (authoritative sources):**
+**GitHub raw URLs (authoritative sources — always fetched live):**
 - SIGNAL_FRAMEWORK.md: `https://raw.githubusercontent.com/mryash01/mf-analytics/refs/heads/master/SIGNAL_FRAMEWORK.md`
 - DAILY_CHECKLIST.md: `https://raw.githubusercontent.com/mryash01/mf-analytics/refs/heads/master/DAILY_CHECKLIST.md`
+- funds.json: `https://raw.githubusercontent.com/mryash01/mf-analytics/refs/heads/master/funds.json`
 
 If changes are detected between the fetched content and any locally held copy, create
 a new branch and raise a PR on `mryash01/mf-analytics` with the updated content.
