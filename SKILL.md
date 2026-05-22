@@ -54,23 +54,28 @@ international funds).
 
 ## Workflow — Execute in Strict Order
 
-### Step 0 — Fetch Live Rubric Files from GitHub (MANDATORY, before any scoring)
+### Step 0 — Fetch Live Files from GitHub (MANDATORY, before any scoring)
 
-Before scoring anything, fetch the two authoritative files from GitHub. These are the
+Before scoring anything, fetch the three authoritative files from GitHub. These are the
 single source of truth — always pull fresh, never rely on a cached or local copy.
 
 ```
 SIGNAL_FRAMEWORK.md (scoring rubric):
   URL: https://raw.githubusercontent.com/mryash01/mf-analytics/refs/heads/master/SIGNAL_FRAMEWORK.md
-  Use: web_fetch on this URL, read the full content, apply the rubric exactly as written.
+  Use: web_fetch this URL, read the full content, apply the rubric exactly as written.
 
 DAILY_CHECKLIST.md (60-second run guide):
   URL: https://raw.githubusercontent.com/mryash01/mf-analytics/refs/heads/master/DAILY_CHECKLIST.md
-  Use: web_fetch on this URL, use it as the step-by-step execution guide.
+  Use: web_fetch this URL, use it as the step-by-step execution guide.
+
+funds.json (fund list and benchmark routing):
+  URL: https://raw.githubusercontent.com/mryash01/mf-analytics/refs/heads/master/funds.json
+  Use: web_fetch this URL, parse the funds array — authoritative list for Step 4.
+       Do NOT use any hardcoded fund list from SKILL.md; live funds.json overrides it.
 ```
 
-If either fetch fails (network error, 404), halt and tell the user:
-> "Could not fetch the live rubric from GitHub. Scoring on stale data is not permitted.
+If any fetch fails (network error, 404), halt and tell the user:
+> "Could not fetch live files from GitHub. Scoring on stale data is not permitted.
 > Check https://github.com/mryash01/mf-analytics and retry."
 
 Do NOT fall back to any locally cached version of these files.
@@ -199,6 +204,7 @@ Tactical deploys are only on top of base SIP, from a pre-committed cash reserve.
 **GitHub raw URLs (authoritative sources):**
 - SIGNAL_FRAMEWORK.md: `https://raw.githubusercontent.com/mryash01/mf-analytics/refs/heads/master/SIGNAL_FRAMEWORK.md`
 - DAILY_CHECKLIST.md: `https://raw.githubusercontent.com/mryash01/mf-analytics/refs/heads/master/DAILY_CHECKLIST.md`
+- funds.json: `https://raw.githubusercontent.com/mryash01/mf-analytics/refs/heads/master/funds.json`
 
 If changes are detected between the fetched content and any locally held copy, create
 a new branch and raise a PR on `mryash01/mf-analytics` with the updated content.
