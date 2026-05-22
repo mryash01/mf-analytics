@@ -1,14 +1,15 @@
 ---
 name: mf-tactical-entry-india
 description: >
-  Daily tactical entry signal for 5 specific Indian equity mutual funds (direct plan).
+  Daily tactical entry signal for 6 specific Indian equity mutual funds (direct plan).
   Use this skill whenever the user asks "should I invest today", "is today a good day
   to invest in [fund]", "give me today's signal", "run the daily check", "MF entry
   signal", or anything related to timing lump-sum purchases into these specific funds:
-  Bank of India Flexi Cap, JM Flexi Cap, Motilal Oswal Midcap, HDFC Mid-Cap Opportunities,
-  Nippon India Small Cap. NOT for generic mutual fund advice — this is purpose-built for
-  these 5 funds and their benchmarks (BSE 500 TRI, Nifty Midcap 150 TRI, Nifty Smallcap
-  250 TRI). Always run this skill end-to-end; never shortcut the data fetch.
+  Bank of India Flexi Cap, JM Flexi Cap, HDFC Mid-Cap Opportunities, Nippon India
+  Growth Mid Cap, Nippon India Small Cap, Bandhan Small Cap. NOT for generic mutual
+  fund advice — this is purpose-built for these 6 funds and their benchmarks (Nifty
+  500, Nifty Midcap 150 TRI, Nifty Smallcap 250 TRI). Always run this skill
+  end-to-end; never shortcut the data fetch.
 ---
 
 # MF Tactical Entry — Daily Signal Engine (India) — v3
@@ -53,6 +54,27 @@ international funds).
 
 ## Workflow — Execute in Strict Order
 
+### Step 0 — Fetch Live Rubric Files from GitHub (MANDATORY, before any scoring)
+
+Before scoring anything, fetch the two authoritative files from GitHub. These are the
+single source of truth — always pull fresh, never rely on a cached or local copy.
+
+```
+SIGNAL_FRAMEWORK.md (scoring rubric):
+  URL: https://raw.githubusercontent.com/mryash01/mf-analytics/refs/heads/master/SIGNAL_FRAMEWORK.md
+  Use: web_fetch on this URL, read the full content, apply the rubric exactly as written.
+
+DAILY_CHECKLIST.md (60-second run guide):
+  URL: https://raw.githubusercontent.com/mryash01/mf-analytics/refs/heads/master/DAILY_CHECKLIST.md
+  Use: web_fetch on this URL, use it as the step-by-step execution guide.
+```
+
+If either fetch fails (network error, 404), halt and tell the user:
+> "Could not fetch the live rubric from GitHub. Scoring on stale data is not permitted.
+> Check https://github.com/mryash01/mf-analytics and retry."
+
+Do NOT fall back to any locally cached version of these files.
+
 ### Step 1 — Fetch Today's Market Data (MANDATORY)
 
 Use web_search for each. Do NOT use prior knowledge or stale numbers. Required reads:
@@ -87,7 +109,7 @@ Round to one decimal. Negative drawdown = currently below peak.
 ### Step 3 — Apply the Signal Scoring Rubric
 
 For each of the 3 benchmark families (Nifty 500, Midcap 150, Smallcap 250), score
-**0 to 10** using the rubric in `SIGNAL_FRAMEWORK.md`. Then map score to action:
+**0 to 10** using the rubric fetched from GitHub in Step 0. Then map score to action:
 
 | Score | Action | Capital to Deploy (% of tactical reserve) |
 |---|---|---|
@@ -162,19 +184,24 @@ Tactical deploys are only on top of base SIP, from a pre-committed cash reserve.
 ## Files in this Skill
 
 - `SKILL.md` (this file) — protocol
-- `SIGNAL_FRAMEWORK.md` — exact scoring rubric (v3)
+- `SIGNAL_FRAMEWORK.md` — exact scoring rubric (v3) — **always fetched live from GitHub**
+- `DAILY_CHECKLIST.md` — fast 60-second daily run — **always fetched live from GitHub**
 - `BACKTEST_2024_2026.md` — original 2-year backtest
 - `BACKTEST_2022_2026.md` — 4-year backtest revealing v1 failures
 - `BACKTEST_2021_2026_v2.md` — 5-year v2 backtest revealing structural-bear under-deploy
 - `BACKTEST_2021_2026_v3.md` — 5-year v3 backtest with fix validated
 - `CHANGELOG.md` — what changed in each version and why
-- `DAILY_CHECKLIST.md` — fast 60-second daily run
 - `telegram_alert.py` — Python pipeline for Telegram notifications
 - `requirements.txt` — Python dependencies
 - `SETUP_TELEGRAM.md` — step-by-step setup guide for daily alerts
 - `.github/workflows/daily.yml` — GitHub Actions cron (optional deployment path)
 
-Read `SIGNAL_FRAMEWORK.md` before scoring. Always.
+**GitHub raw URLs (authoritative sources):**
+- SIGNAL_FRAMEWORK.md: `https://raw.githubusercontent.com/mryash01/mf-analytics/refs/heads/master/SIGNAL_FRAMEWORK.md`
+- DAILY_CHECKLIST.md: `https://raw.githubusercontent.com/mryash01/mf-analytics/refs/heads/master/DAILY_CHECKLIST.md`
+
+If changes are detected between the fetched content and any locally held copy, create
+a new branch and raise a PR on `mryash01/mf-analytics` with the updated content.
 
 ---
 
