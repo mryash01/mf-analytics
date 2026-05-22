@@ -1,0 +1,40 @@
+{
+  "_comment": "Single source of truth for the fund list. To add/remove a fund, edit ONLY this file. The script reads from this, and the skill markdown references it without listing funds inline.",
+  "_schema": {
+    "name": "Display name of the fund (used in Telegram alerts)",
+    "benchmark": "Must be one of: nifty500, midcap150, smallcap250. Determines which score routes to this fund.",
+    "category": "Free-text category label, used only for grouping in alerts."
+  },
+  "funds": [
+    {
+      "name": "Bank of India Flexi Cap",
+      "benchmark": "nifty500",
+      "category": "flexi_cap"
+    },
+    {
+      "name": "JM Flexi Cap",
+      "benchmark": "nifty500",
+      "category": "flexi_cap"
+    },
+    {
+      "name": "HDFC Mid-Cap Opportunities",
+      "benchmark": "midcap150",
+      "category": "mid_cap"
+    },
+    {
+      "name": "Nippon India Growth Mid Cap",
+      "benchmark": "midcap150",
+      "category": "mid_cap"
+    },
+    {
+      "name": "Nippon India Small Cap",
+      "benchmark": "smallcap250",
+      "category": "small_cap"
+    },
+    {
+      "name": "Bandhan Small Cap",
+      "benchmark": "smallcap250",
+      "category": "small_cap"
+    }
+  ]
+}
